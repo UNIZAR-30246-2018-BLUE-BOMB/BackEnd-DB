@@ -46,3 +46,17 @@ AS $$
     END IF;
   END;
 $$;
+
+CREATE OR REPLACE FUNCTION get_supported_browsers()
+  RETURNS SETOF text
+LANGUAGE sql
+AS $$
+  SELECT DISTINCT browser FROM clickstat;
+$$;
+
+CREATE OR REPLACE FUNCTION get_supported_os()
+  RETURNS SETOF text
+LANGUAGE sql
+AS $$
+  SELECT DISTINCT operatingsystem FROM clickstat;
+$$;
