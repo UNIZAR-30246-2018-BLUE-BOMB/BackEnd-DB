@@ -1,28 +1,51 @@
-create table shortened_url
+create table short_sequences
 (
-  seq     text not null,
-  url     text not null,
-  add_url text    default 'empty' :: text,
-  timeout integer default 10,
-  constraint shortened_url_pk
-  primary key (seq)
+  id       serial not null
+    constraint short_sequences_pkey
+    primary key,
+  seq      text,
+  url      text   not null,
+  redirect text    default 'empty' :: text,
+  time_out integer default 10
 );
 
-create unique index table_name_url_add_url_time_uindex
-  on shortened_url (url, add_url, timeout);
+create unique index short_sequences_seq_uindex
+  on short_sequences (seq);
 
-CREATE TABLE qr
+create unique index short_sequences_url_redirect_time_out_uindex
+  on short_sequences (url, redirect, time_out);
+
+create table qr
 (
-    seq text PRIMARY KEY,
-    image bytea NOT NULL,
-    CONSTRAINT qr_shortened_url_seq_fk FOREIGN KEY (seq) REFERENCES public.shortened_url (seq)
+  seq   text not null
+    constraint qr_pkey
+    primary key
+    constraint qr_short_sequences_seq_fk
+    references short_sequences (seq),
+  image bytea
 );
-CREATE TABLE clickStat
+
+create table browser_stat
 (
-    id bigserial PRIMARY KEY NOT NULL,
-    seq text NOT NULL,
-    date date NOT NULL,
-    browser text NOT NULL,
-    operatingSystem text NOT NULL,
-    CONSTRAINT stat_shortened_url_seq_fk FOREIGN KEY (seq) REFERENCES public.shortened_url (seq)
+  seq     text not null
+    constraint browser_stat_short_sequences_seq_fk
+    references short_sequences (seq),
+  date    date not null,
+  browser text not null,
+  click   integer default 0,
+  constraint browser_stat_pk
+  primary key (seq, date, browser)
 );
+
+create table os_stat
+(
+  seq   text not null
+    constraint browser_stat_short_sequences_seq_fk
+    references short_sequences (seq),
+  date  date not null,
+  os    text not null,
+  click integer default 0,
+  constraint os_stat_pk
+  primary key (seq, date, os)
+);
+
