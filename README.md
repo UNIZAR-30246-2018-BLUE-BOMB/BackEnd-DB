@@ -1,5 +1,17 @@
 # DB docs
+## Run docker-compose
+This project repository ```<repository >```
+```sh
+sudo apt-get install docker.io docker-compose
+cd <repository>
+sudo docker-compose build
+sudo docker-compose up -d
+```
 
+Restarting docker
+```sh
+sudo docker-compose down && sudo docker-compose build && sudo docker-compose up -d
+```
 ##  DB info
 - Database: postgres
 - User: blueBomb
