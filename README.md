@@ -9,6 +9,8 @@
   - [Supported OS](#f-OS)
   - [Supported browsers](#f-browsers)
   - [Add stat](#f-stat)
+  - [Insert qr](#f-new-qr)
+  - [Get qr](#f-get-qr)
 
 <a name="run"></a>
 
@@ -86,7 +88,7 @@ sudo docker-compose down && sudo docker-compose build && sudo docker-compose up 
 
 <a name="f-stat"></a>
 
-##### Insert stat
+##### Add stat
 
 * insert_stat(sequence, browser, os)
 
@@ -103,3 +105,40 @@ sudo docker-compose down && sudo docker-compose build && sudo docker-compose up 
 * Description:
 
   Update today stats for the browser and so given.
+
+<a name="f-new-qr"></a>
+
+##### Insert qr
+
+  * insert_qr(sequence, qr)
+
+  |parameter|type|required|default|
+  |:-------:|:--:|:------:|:-----:|
+  |sequence|text|true|
+  |qr|byte[]|true|
+
+  * Returns: Inserted/updated
+
+  * Return type: Boolean
+
+  * Description:
+
+    If not exist, insert qr into DB else update existing qr
+
+<a name="f-get-qr"></a>
+
+##### Get qr
+
+      * get_qr(sequence)
+
+      |parameter|type|required|default|
+      |:-------:|:--:|:------:|:-----:|
+      |sequence|text|true|
+
+      * Returns: qr
+
+      * Return type: Byte[]
+
+      * Description:
+
+        Returns qr image
