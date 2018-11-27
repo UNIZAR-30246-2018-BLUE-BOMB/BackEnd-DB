@@ -109,3 +109,24 @@ CREATE OR REPLACE FUNCTION insert_stat(in_seq text, in_browser text, in_os text)
     EXECUTE insert_os_stat(in_seq, in_os);
   END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION insert_qr(in_seq text, in_qr bytea) RETURNS BOOLEAN AS $$
+  DECLARE
+    aux text;
+  BEGIN
+    SELECT seq INTO aux FROM qr WHERE seq = in_seq;
+    IF(aux IS NULL) THEN
+      UPDATE qr SET image = in_qr WHERE seq = in_seq;
+      RETURN FOUND;
+    ELSE
+      INSERT INTO qr(seq, image) VALUES (in_seq, in_qr);
+      RETURN FOUND;
+    END IF;
+  END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_qr(in_seq text) RETURNS bytea AS $$
+  SELECT image
+  FROM qr
+  WHERE seq = in_seq
+$$ LANGUAGE sql;
