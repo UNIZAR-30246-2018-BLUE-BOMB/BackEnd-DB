@@ -130,3 +130,13 @@ CREATE OR REPLACE FUNCTION get_qr(in_seq text) RETURNS bytea AS $$
   FROM qr
   WHERE seq = in_seq
 $$ LANGUAGE sql;
+
+CREATE TYPE text_int AS (item text, number bigint);
+
+CREATE OR REPLACE FUNCTION get_os_global_stats(in_seq text) returns setof text_int AS $$
+    SELECT os, SUM(click) FROM os_stat WHERE seq = in_seq GROUP BY seq, os;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION get_browser_global_stats(in_seq text) returns setof text_int AS $$
+    SELECT browser, SUM(click) FROM browser_stat WHERE seq = in_seq GROUP BY seq, browser;
+$$ LANGUAGE SQL;
