@@ -31,15 +31,3 @@ INSERT INTO browser_stat (seq, date, browser, click) VALUES ('0', '2018-11-14', 
 INSERT INTO browser_stat (seq, date, browser, click) VALUES ('0', '2018-11-14', 'Firefox', 4);
 INSERT INTO browser_stat (seq, date, browser, click) VALUES ('0', '2018-11-15', 'Chrome', 5);
 INSERT INTO browser_stat (seq, date, browser, click) VALUES ('0', '2018-11-15', 'Firefox', 6);
-
-CREATE USER blueBomb WITH ENCRYPTED PASSWORD 'unizar';
-GRANT USAGE ON SCHEMA public to blueBomb;
-GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public to bluebomb;
-GRANT USAGE ON ALL SEQUENCES IN SCHEMA public to bluebomb;
-GRANT SELECT ON ALL TABLES IN SCHEMA public to blueBomb;
-GRANT INSERT ON ALL TABLES IN SCHEMA public to blueBomb;
-GRANT UPDATE ON ALL TABLES IN SCHEMA public to blueBomb;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO blueBomb;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT INSERT ON TABLES TO blueBomb;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT UPDATE ON TABLES TO blueBomb;
-
