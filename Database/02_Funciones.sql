@@ -125,10 +125,28 @@ CREATE OR REPLACE FUNCTION insert_qr(in_seq text, in_qr bytea) RETURNS BOOLEAN A
   END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_qr(in_seq text) RETURNS bytea AS $$
-  SELECT image
+CREATE OR REPLACE FUNCTION get_qr(
+    in_seq text,
+    in_height int,
+    in_width int,
+    in_err text,
+    in_margin int,
+    in_color int,
+    in_back int,
+    in_logo text,
+    in_response text)
+RETURNS bytea AS $$
+  SELECT file
   FROM qr
   WHERE seq = in_seq
+    AND height = in_height
+    AND width = in_width
+    AND error_correction = in_err
+    AND margin = in_margin
+    AND qr_color = in_color
+    AND background_color = in_back
+    AND logo = in_logo
+    AND response_format = in_response
 $$ LANGUAGE sql;
 
 CREATE TYPE text_int AS (item text, number bigint);

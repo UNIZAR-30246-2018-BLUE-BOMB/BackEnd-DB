@@ -17,12 +17,20 @@ create unique index short_sequences_url_redirect_time_out_uindex
 
 create table qr
 (
-  seq   text not null
-    constraint qr_pkey
-    primary key
-    constraint qr_short_sequences_seq_fk
-    references short_sequences (seq),
-  image bytea
+	seq text
+		constraint qr_short_sequences_seq_fk
+			references short_sequences (seq),
+	height int,
+	width int,
+	error_correction text,
+	margin int,
+	qr_color int,
+	background_color int,
+	logo text,
+	response_format text,
+	file bytea,
+	constraint qr_pk
+		primary key (seq, height, width, error_correction, margin, qr_color, background_color, logo, response_format)
 );
 
 create table browser_stat
