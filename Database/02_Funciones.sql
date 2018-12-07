@@ -103,10 +103,31 @@ CREATE OR REPLACE FUNCTION insert_os_stat(in_seq text, in_os text) RETURNS void 
   END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION insert_stat(in_seq text, in_browser text, in_os text) RETURNS VOID AS $$
+CREATE TYPE int_int AS (item_one int, item_two int);
+
+CREATE TYPE text_int AS (item text, number bigint);
+
+CREATE OR REPLACE FUNCTION get_os_global_stats(in_seq text) returns setof text_int AS $$
+    SELECT os, SUM(click) FROM os_stat WHERE seq = in_seq GROUP BY seq, os;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION get_browser_global_stats(in_seq text) returns setof text_int AS $$
+    SELECT browser, SUM(click) FROM browser_stat WHERE seq = in_seq GROUP BY seq, browser;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION insert_stat(in_seq text, in_browser text, in_os text) RETURNS TABLE(browser bigint, os bigint) AS $$
+  DECLARE
+    aux text;
   BEGIN
-    EXECUTE insert_browser_stat(in_seq, in_browser);
-    EXECUTE insert_os_stat(in_seq, in_os);
+    SELECT seq INTO aux FROM short_sequences WHERE seq = in_seq;
+    IF(aux IS NOT NULL) THEN
+      EXECUTE insert_browser_stat(in_seq, in_browser);
+      EXECUTE insert_os_stat(in_seq, in_os);
+      RETURN QUERY
+      SELECT b.number, o.number
+      FROM get_os_global_stats(in_seq) o, get_browser_global_stats(in_seq) b
+      WHERE o.item = in_os AND b.item = in_browser;
+    END IF;
   END;
 $$ LANGUAGE plpgsql;
 
@@ -152,13 +173,3 @@ RETURNS bytea AS $$
     AND logo = in_logo
     AND response_format = in_response
 $$ LANGUAGE sql;
-
-CREATE TYPE text_int AS (item text, number bigint);
-
-CREATE OR REPLACE FUNCTION get_os_global_stats(in_seq text) returns setof text_int AS $$
-    SELECT os, SUM(click) FROM os_stat WHERE seq = in_seq GROUP BY seq, os;
-$$ LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION get_browser_global_stats(in_seq text) returns setof text_int AS $$
-    SELECT browser, SUM(click) FROM browser_stat WHERE seq = in_seq GROUP BY seq, browser;
-$$ LANGUAGE SQL;
