@@ -173,3 +173,43 @@ RETURNS bytea AS $$
     AND logo = in_logo
     AND response_format = in_response
 $$ LANGUAGE sql;
+
+CREATE OR REPLACE FUNCTION get_ad(in_seq text) RETURNS TABLE(ad text, t_out integer) AS $$
+  DECLARE
+    ad text;
+  BEGIN
+    SELECT redirect INTO ad FROM short_sequences WHERE seq = in_seq;
+    IF(ad != 'empty') THEN
+      RETURN QUERY SELECT redirect, time_out FROM short_sequences WHERE seq = in_seq;
+    END IF;
+  END;
+  $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_head_url(in_seq text) RETURNS text AS $$
+  SELECT url FROM short_sequences WHERE seq = in_seq;
+  $$ LANGUAGE sql;
+
+
+CREATE FUNCTION aux_os(in_seq text, in_date date) RETURNS bigint AS $$
+  SELECT SUM(click) FROM os_stat WHERE seq = in_seq AND date = in_date GROUP BY date;
+  $$ LANGUAGE SQL;
+
+CREATE FUNCTION aux_browser(in_seq text, in_date date) RETURNS bigint AS $$
+  SELECT SUM(click) FROM browser_stat WHERE seq = in_seq AND date = in_date GROUP BY date;
+  $$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION get_os_daily_stats(in_seq text, in_from date, in_to date) RETURNS TABLE (date date, item text, click int, sum bigint) AS $$
+    SELECT date, os, click, aux_os(seq, date) AS SUM
+    FROM os_stat
+    WHERE seq = in_seq AND
+          date BETWEEN in_from AND in_to
+    GROUP BY date, os, click, seq;
+  $$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION get_browser_daily_stats(in_seq text, in_from date, in_to date) RETURNS TABLE (date date, item text, click int, sum bigint) AS $$
+    SELECT date, browser, click, aux_browser(seq, date) AS SUM
+    FROM browser_stat
+    WHERE seq = in_seq AND
+          date BETWEEN in_from AND in_to
+    GROUP BY date, browser, click, seq;
+  $$ LANGUAGE SQL;
