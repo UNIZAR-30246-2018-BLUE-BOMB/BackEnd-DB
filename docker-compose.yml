@@ -1,6 +1,0 @@
-database:
-  restart: always
-  build: ./Database
-  ports:
-    - "5432:5432"
-  env_file: .env
