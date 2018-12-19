@@ -4,18 +4,18 @@ CREATE OR REPLACE FUNCTION convert_to_sequence(value bigint) returns text as $$
     ascii_n int;
   BEGIN
     WHILE value > 0 LOOP
-      ascii_n = ascii('?') + (value-1) % 62;
+      ascii_n = ascii('W') + (value-1) % 36;
       CASE
-        WHEN ascii_n=63 THEN s_aux = '0' || s_aux;
-        WHEN ascii_n=64 THEN s_aux = '1' || s_aux;
-        WHEN ascii_n=91 THEN s_aux = '2' || s_aux;
-        WHEN ascii_n=92 THEN s_aux = '3' || s_aux;
-        WHEN ascii_n=93 THEN s_aux = '4' || s_aux;
-        WHEN ascii_n=94 THEN s_aux = '5' || s_aux;
-        WHEN ascii_n=95 THEN s_aux = '6' || s_aux;
-        WHEN ascii_n=96 THEN s_aux = '7' || s_aux;
-        WHEN ascii_n=123 THEN s_aux = '8' || s_aux;
-        WHEN ascii_n=124 THEN s_aux = '9' || s_aux;
+        WHEN ascii_n=87 THEN s_aux = '0' || s_aux;
+        WHEN ascii_n=88 THEN s_aux = '1' || s_aux;
+        WHEN ascii_n=89 THEN s_aux = '2' || s_aux;
+        WHEN ascii_n=90 THEN s_aux = '3' || s_aux;
+        WHEN ascii_n=91 THEN s_aux = '4' || s_aux;
+        WHEN ascii_n=92 THEN s_aux = '5' || s_aux;
+        WHEN ascii_n=93 THEN s_aux = '6' || s_aux;
+        WHEN ascii_n=94 THEN s_aux = '7' || s_aux;
+        WHEN ascii_n=95 THEN s_aux = '8' || s_aux;
+        WHEN ascii_n=96 THEN s_aux = '9' || s_aux;
         ELSE s_aux = text(CHR(ascii_n)) || s_aux;
       END CASE;
       value = value/62;
